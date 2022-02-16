@@ -1,19 +1,59 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-US">
 
     <head>
+        <meta charset="utf-8">
+        <title>API Search Front-end</title>
+
+        <!-- <link rel="stylesheet" href="style.css"> -->
+
+        <style>
+            @media screen and (max-width: 599px) {
+                .small
+            }
+            @media screen and (min-width: 600px) {
+                .large
+            }
 
 
+        </style>
 
     </head>
 
     <body>
         <p>{{body}}</p>
+        <h1>Search Wikipedia or Reddit!</h1>
+        <form action="/post" method="post">
+            <fieldset>
+                <legend>Search Function</legend>
+
+                <div>
+                    <label for="Site">Site</label>
+                    <select id="site" name="search_site">
+                        <option value="Wikipedia">Wikipedia</option>
+                        <option value="Reddit">Reddit</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="NumResults">How Many Results do you want?</label>
+                    <input type="number" id="Number of Results" name="num_results">
+                </div>
+
+                <div>
+                    <label for="Search Query">Search Here:</label>
+                    <input type="text" id="Search Query" name="search_query">
+                </div>
+
+                <div>
+                    <button type="CallAPI">Search!</button>
+                </div>
 
 
+            </fieldset>
 
 
-
+        </form>
 
 
     </body>
