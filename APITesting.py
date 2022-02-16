@@ -7,25 +7,27 @@ app = Flask(__name__)
 @app.route("/", methods=['GET'])
 def index():
     return render_template("index.html")
-"""
+
+
 @app.route('/post', methods=['POST'])
 def post():
-    #userReq = request.form[0]
-    '''
-    source = input("Reddit or Wikipedia?: ")
-    search = input("Search Query: ") #This will be an input string
-    results = []
-    limit = 10
+    userReq = request.form
 
-    if 'w' in source.lower():
+    results = []
+    site = userReq['searchSite']
+    limit = int(userReq['numResults'])
+    search = userReq['searchQuery']
+
+    def wikiAPI(limit, search):
         wikiurl = "https://en.wikipedia.org/w/api.php?action=opensearch&search=" + search + "&limit=10&namespace=0&format=json"
         response = requests.get(wikiurl)
 
         for i in range(limit):
             results.append([response.json()[1][i], response.json()[3][i]])
 
+        return results
 
-    elif 'r' in source.lower():
+    def redditAPI(limit, search):
         redditurl = "https://www.reddit.com/"
         redditData = {'grant_type': 'password', 'username': 'FayazTestsAPI', 'password': 'APITestingWithFayaz'}
         auth = requests.auth.HTTPBasicAuth('qTgintKTLlcLhma-KR9ZAA', 'SpMdvn3rH8b8zbqZgQPxjL-s-IQLeA')
@@ -38,17 +40,23 @@ def post():
         headers = {'Authorization': redditToken, 'User-Agent': 'Script by Fayaz Ahmed'}
         payload = {'q': search, 'limit': limit, 'sort': 'top'}
         response = requests.get(apiurl, headers = headers, params = payload)
-
-        for i in range(limit):
+        for i in range(min(limit, len(response.json()['data']['children']))):
             full = response.json()['data']['children'][i]['data']
-            results.append([full['title'], 'https://reddit.com' + full['permalink'], full['thumbnail']])
-    '''
+            results.append([full['title'], 'https://reddit.com' + full['permalink']])
 
-    return "received: {}".format(userReq)
-'''
+        return results
+
+    if site == "Wikipedia":
+        results = wikiAPI(limit, search)
+    elif site == "Reddit":
+        results = redditAPI(limit, search)
+
+    return format(results)
+
+
 if __name__ == "__main__":
     app.run()
-"""
+
 
 
 #for res in results:

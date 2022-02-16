@@ -10,7 +10,7 @@ token = redditD['access_token']
 redditToken = 'bearer ' + token
 apiurl = "https://oauth.reddit.com/r/all/search"
 headers = {'Authorization': redditToken, 'User-Agent': 'Script by Fayaz Ahmed'}
-payload = {'q': 'crossword', 'limit': 1, 'sort': 'relevance'}
+payload = {'q': 'thilany', 'limit': 1, 'sort': 'relevance'}
 response = requests.get(apiurl, headers = headers, params = payload)
 
-print(response.json()['data']['children'][0]['data']['permalink'])
+print(response.json()['data']['children'][0])
