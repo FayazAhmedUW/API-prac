@@ -33,8 +33,8 @@ def post():
 
     def redditAPI(limit, search):
         redditurl = "https://www.reddit.com/"
-        redditData = {'grant_type': 'password', 'username': 'FayazTestsAPI', 'password': 'APITestingWithFayaz'}
-        auth = requests.auth.HTTPBasicAuth('qTgintKTLlcLhma-KR9ZAA', 'SpMdvn3rH8b8zbqZgQPxjL-s-IQLeA')
+        redditData = {'grant_type': 'password', 'username': 'USERNAME', 'password': 'PASSWORD'}
+        auth = requests.auth.HTTPBasicAuth('APP-KEY', 'SECRET-KEY')
         redditReq = requests.post(redditurl + 'api/v1/access_token', data = redditData, headers={'user-agent': 'script by Fayaz Ahmed'}, auth = auth)
         redditD = redditReq.json()
         token = redditD['access_token']
