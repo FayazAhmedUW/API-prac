@@ -6,8 +6,8 @@ app = Flask(__name__)
 
 @app.route("/", methods=['GET'])
 def index():
-    results = [[],[],[],[],[]]
-    return render_template("index.html", data=results, site = ' ', search=' ')
+    results = []
+    return render_template("index.html", data=results, site = ' ', search=' ', resNum=len(results))
 
 
 @app.route('/post', methods=['POST'])
@@ -19,14 +19,16 @@ def post():
     if userReq['numResults'].isnumeric():
         limit = int(userReq['numResults'])
     else:
-        limit = 5
+        limit = 10
     search = userReq['searchQuery']
+    if len(search) == 0:
+        return render_template("index.html", data=results, site = ' ', search=' ', resNum=len(results))
 
     def wikiAPI(limit, search):
-        wikiurl = "https://en.wikipedia.org/w/api.php?action=opensearch&search=" + search + "&limit=10&namespace=0&format=json"
+        wikiurl = "https://en.wikipedia.org/w/api.php?action=opensearch&search=" + search + "&limit=" + str(limit) + "&namespace=0&format=json"
         response = requests.get(wikiurl)
 
-        for i in range(limit):
+        for i in range(min(limit, len(response.json()[1]))):
             results.append([response.json()[1][i], response.json()[3][i]])
 
         return results
@@ -42,7 +44,7 @@ def post():
         redditToken = 'bearer ' + token
         apiurl = "https://oauth.reddit.com/r/all/search"
         headers = {'Authorization': redditToken, 'User-Agent': 'Script by Fayaz Ahmed'}
-        payload = {'q': search, 'limit': limit, 'sort': 'top'}
+        payload = {'q': search, 'limit': limit, 'sort': 'relevant'}
         response = requests.get(apiurl, headers = headers, params = payload)
         for i in range(min(limit, len(response.json()['data']['children']))):
             full = response.json()['data']['children'][i]['data']
@@ -55,13 +57,8 @@ def post():
     elif site == "Reddit":
         results = redditAPI(limit, search)
 
-    return render_template("index.html", data = results, site = site +':', search = search)
+    return render_template("index.html", data = results, site = site +':', search = search, resNum=len(results))
 
 
 if __name__ == "__main__":
     app.run()
-
-
-
-#for res in results:
-#    print(res[0] + ": " + res[1])
