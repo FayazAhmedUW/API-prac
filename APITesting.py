@@ -6,7 +6,8 @@ app = Flask(__name__)
 
 @app.route("/", methods=['GET'])
 def index():
-    return render_template("index.html")
+    results = [[],[],[],[],[]]
+    return render_template("index.html", data=results, site = ' ', search=' ')
 
 
 @app.route('/post', methods=['POST'])
@@ -15,7 +16,10 @@ def post():
 
     results = []
     site = userReq['searchSite']
-    limit = int(userReq['numResults'])
+    if userReq['numResults'].isnumeric():
+        limit = int(userReq['numResults'])
+    else:
+        limit = 5
     search = userReq['searchQuery']
 
     def wikiAPI(limit, search):
@@ -51,7 +55,7 @@ def post():
     elif site == "Reddit":
         results = redditAPI(limit, search)
 
-    return format(results)
+    return render_template("index.html", data = results, site = site +':', search = search)
 
 
 if __name__ == "__main__":
